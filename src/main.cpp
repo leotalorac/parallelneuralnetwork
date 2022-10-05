@@ -34,11 +34,11 @@ int main(int argc, char **argv) {
         topology.push_back(650);
 
         NeuralNetwork *n = new NeuralNetwork(topology, 2, 3, 1, 1, 0.05, 1);
-
         for (int i = 0; i < 1000; i++) {
             // cout << "Training at index " << i << endl;
             n->train(input, target, bias, learningRate, momentum);
             cout << "Error: " << n->error << endl;
+            cout << "Size: " << n->topologySize << endl;
         }
        // Primeiro teste:
 /*     for (int i = 0; i < 100; i++) {

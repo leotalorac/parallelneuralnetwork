@@ -20,7 +20,7 @@ void NeuralNetwork::feedForward() {
         }
 
         utils::Math::multiplyMatrix(a, b, c);
-
+        // Parallel Neuron update weights 
         for (int c_index = 0; c_index < c->getNumCols(); c_index++) {
             this->setNeuronValue(i + 1, c_index, c->getValue(0, c_index) + this->bias);
         }

@@ -11,6 +11,7 @@ NeuralNetwork::NeuralNetwork(
     this->learningRate  = learningRate;
     this->momentum      = momentum;
     this->bias          = bias;
+    cout<<this->topologySize<<endl;
 
   for (int i = 0; i < topologySize; i++) {
     if (i > 0 && i < (topologySize - 1)) {

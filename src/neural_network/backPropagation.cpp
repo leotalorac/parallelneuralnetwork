@@ -54,7 +54,7 @@ void NeuralNetwork::backPropagation() {
                       this->topology.at(indexOutputLayer),
                       false
                     );
-
+  // PARALLEL COMPUTE LAYER WEIGHTS
   for(int r = 0; r < this->topology.at(indexOutputLayer - 1); r++) {
     for(int c = 0; c < this->topology.at(indexOutputLayer); c++) {
 
@@ -124,7 +124,7 @@ void NeuralNetwork::backPropagation() {
                         this->weightMatrices.at(i - 1)->getNumCols(),
                         false
                       );
-
+    //Parallel back-propagation
     for(int r = 0; r < tempNewWeights->getNumRows(); r++) {
       for(int c = 0; c < tempNewWeights->getNumCols(); c++) {
         double originalValue  = this->weightMatrices.at(i - 1)->getValue(r, c);
