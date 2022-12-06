@@ -4,61 +4,81 @@
 #include <fstream>
 #include <ostream>
 #include <streambuf>
-#include <ctime> 
+#include <ctime>
 
 #include "../include/Matrix.hpp"
 #include "../include/utils/Math.hpp"
 #include "../include/NeuralNetwork.hpp"
 #include "../include/mnist_reader.hpp"
 
-
 using namespace std;
 
-int main(int argc, char **argv) {
+vector<double> mapInput(vector<uint8_t> sample)
+{
+    // Segundo teste:
+    vector<double> input;
+    for (size_t i = 0; i < sample.size(); i++)
+    {
+        input.push_back((double)unsigned(sample.at(i)));
+    }
+    return input;
+}
+
+vector<double> mapOutput(uint8_t outputSample)
+{
+    vector<double> target;
+    for (size_t i = 0; i < 10; i++)
+    {
+        if (unsigned(outputSample) == i)
+        {
+            target.push_back(1.0);
+        }
+        else
+        {
+            target.push_back(0.0);
+        }
+    }
+    return target;
+}
+
+int main(int argc, char **argv)
+{
     // get dataset
     auto dataset = mnist::read_dataset<vector, vector, uint8_t, uint8_t>();
+    // size of the data set
+    cout << dataset.training_images.size() << endl; // 60000
+    cout << dataset.training_labels.size() << endl;
+    cout << dataset.test_images.size() << endl; // 10000
+    cout << dataset.test_labels.size() << endl;
+
+    cout << unsigned(dataset.training_labels.at(0)) << endl;       // numbers on uint8_t format
+    cout << dataset.training_images.at(0).size() << endl;          // images of 28 * 28 on uint8_t format every pixel
+    cout << unsigned(dataset.training_images.at(0).at(0)) << endl; // images of 28 * 28 on uint8_t format every pixel of 0 or 1 (white and black)
 
 
+    double learningRate = 0.05;
+    double momentum = 1;
+    double bias = 1;
 
-       // Segundo teste:
-        // vector<double> input;
-        // input.push_back(0.2);
-        // input.push_back(0.5);
-        // input.push_back(0.1);
-       
-        // vector<double> target;
-        // target.push_back(0.2); 
-        // target.push_back(0.5); 
-        // target.push_back(0.1);
-    
-        // double learningRate  = 0.05;
-        // double momentum      = 1;
-        // double bias          = 1;
+    vector<int> topology;
+    topology.push_back(784); //input layer
+    topology.push_back(32); // hidden layer
+    topology.push_back(10); //output layer
 
-        // vector<int> topology;
-        // topology.push_back(650);
-        // topology.push_back(213);
-        // topology.push_back(650);
+    cout << "Neural network" << endl;
 
-        // NeuralNetwork *n = new NeuralNetwork(topology, 2, 3, 1, 1, 0.05, 1);
-        // for (int i = 0; i < 1000; i++) {
-        //     // cout << "Training at index " << i << endl;
-        //     n->train(input, target, bias, learningRate, momentum);
-        //     cout << "Error: " << n->error << endl;
-        //     cout << "Size: " << n->topologySize << endl;
-        // }
-       // Primeiro teste:
-/*     for (int i = 0; i < 100; i++) {
-        Matrix *a = new Matrix(100, 100, true);
-        Matrix *b = new Matrix(100, 100, true);
-        Matrix *c = new Matrix(a->getNumRows(), b->getNumRows(), false);
-        cout << "Multiplying matrix at index " << i << endl;
-        utils::Math::multiplyMatrix(a, b, c);
-
-        delete a;
-        delete b;
-        delete c;
-    } */
-
+    NeuralNetwork *n = new NeuralNetwork(topology, 1, 2, 3, bias, learningRate, momentum);
+    for (int i = 0; i < dataset.training_images.size(); i++)
+    {
+        vector<uint8_t> sample = dataset.training_images.at(i);
+        uint8_t output = dataset.training_labels.at(i);
+        vector<double> input = mapInput(sample);
+        vector<double> target = mapOutput(output);
+        // cout << "Training at index " << i << endl;
+        n->train(input, target, bias, learningRate, momentum);
+        cout << "Error: " << n->error << endl;
+        cout << "Size: " << n->topologySize << endl;
+        cout<<i<<endl;
+    }
     return 0;
 }
